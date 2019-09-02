@@ -31,7 +31,7 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget build(BuildContext context) {
     return Consumer<TaskData>(
       builder: (context, taskData, child) {
-        if (taskData.initialSyncNeeded && googleSignIn != null)
+        if (taskData.initialSyncNeeded && googleSignIn.currentUser != null)
           taskData.initialSync('${googleSignIn.currentUser.email}');
 
         return Scaffold(

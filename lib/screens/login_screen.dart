@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 import 'package:todoer/screens/task_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todoer/widgets/constants.dart';
@@ -11,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  bool isAuth = false;
 
   @override
   void initState() {
@@ -28,15 +30,39 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  handleSignIn(GoogleSignInAccount account) {
+  handleSignIn(GoogleSignInAccount account) async {
     if (account != null) {
       print('User signed in!: $account');
-      Navigator.push(
+      setState(() {
+        isAuth = true;
+      });
+      bool taskScreenSignedOut = false;
+      taskScreenSignedOut = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => TaskScreen(googleSignIn),
         ),
       );
+      print('DEBUG: taskScreenSignedOut: $taskScreenSignedOut');
+
+      // check if we got here from back button or from sign out
+      if (googleSignIn.currentUser == null && taskScreenSignedOut) {
+        // user has signed out, show sign-in button as usual
+        print('DEBUG: User has signed out!');
+
+        setState(() {
+          isAuth = false;
+        });
+      } else {
+        // back button pressed: don't show the sign-in button, perhaps just exit
+        print("User still signed in. Back button pressed? System exit here?");
+        // Navigator.pop(context);
+        // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+      }
+    } else {
+      setState(() {
+        isAuth = false;
+      });
     }
   }
 
@@ -95,20 +121,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               SizedBox(height: 20.0),
-              Material(
-                type: MaterialType.transparency,
-                child: InkWell(
-                  splashColor: Colors.white,
-                  child: Container(
-                    width: 200.0,
-                    child: Image(
-                      image:
-                          AssetImage('assets/images/google_signin_button.png'),
+              isAuth
+                  ? SizedBox(height: 0.0)
+                  : Material(
+                      type: MaterialType.transparency,
+                      child: InkWell(
+                        splashColor: Colors.white,
+                        child: Container(
+                          width: 200.0,
+                          child: Image(
+                            // image: googleSignIn.currentUser == null
+                            //     ? AssetImage('assets/images/google_signin_button.png')
+                            //     : Image(
+                            //         image: null,
+                            //       ),
+                            image: AssetImage(
+                                'assets/images/google_signin_button.png'),
+                          ),
+                        ),
+                        onTap: login,
+                      ),
                     ),
-                  ),
-                  onTap: login,
-                ),
-              ),
             ],
           ),
         ),

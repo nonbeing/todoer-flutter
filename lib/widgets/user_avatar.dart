@@ -16,7 +16,7 @@ class UserAvatar extends StatelessWidget {
         height: 60,
         decoration: BoxDecoration(
           color: Colors.white,
-          image: googleSignIn != null
+          image: googleSignIn.currentUser != null
               ? DecorationImage(
                   image: NetworkImage('${googleSignIn.currentUser.photoUrl}'),
                   fit: BoxFit.cover,
@@ -38,15 +38,16 @@ class UserAvatar extends StatelessWidget {
                 actions: <Widget>[
                   FlatButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pop(context, false);
                       },
                       child: Text('Cancel')),
                   FlatButton(
-                    onPressed: () {
-                      googleSignIn.signOut();
+                    onPressed: () async {
+                      await googleSignIn.signOut();
                       taskData.initialSyncNeeded = true;
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      Navigator.pop(context, true); // pop out of the dialog box
+                      Navigator.pop(context, true); // pop back to login screen
+                      Navigator.pop(context, true); // pop back to login screen
                     },
                     child: Text('Sign Out'),
                   )
