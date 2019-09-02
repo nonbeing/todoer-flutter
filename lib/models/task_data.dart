@@ -11,16 +11,8 @@ class TaskData extends ChangeNotifier {
   List<Task> _globalTasks = [];
   bool initialSyncNeeded = true;
 
-  // TaskData(@required userName) {
-  //   this.collectionName = userName;
-  //   syncing = true;
-  //   // get the initial task list from Firestore upon object construction
-  //   _getDataFromDb();
-  //   syncing = false;
-  // }
-
   initialSync(String username) {
-    if (initialSyncNeeded) {
+    if (initialSyncNeeded && username != null) {
       _globalTasks.clear();
       this.collectionName = username;
       // get the initial task list from Firestore upon object construction

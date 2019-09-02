@@ -1,4 +1,4 @@
-package tech.anatta.todoer_flutter;
+package tech.anatta.todoer;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

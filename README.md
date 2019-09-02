@@ -1,4 +1,4 @@
-# todoer
+# ToDoer
 
 A ToDoist-like app in Flutter.
 
