@@ -11,7 +11,7 @@ class UserAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: new RoundAvatar(googleSignIn: googleSignIn),
+      child: RoundAvatar(googleSignIn: googleSignIn),
       onTap: () {
         return showDialog(
             context: context,
@@ -27,9 +27,9 @@ class UserAvatar extends StatelessWidget {
                       child: Text('Cancel')),
                   FlatButton(
                     onPressed: () async {
-                      await googleSignIn.signOut();
                       taskData.initialSyncNeeded = true;
-                      Navigator.pop(context, true); // pop out of the dialog box
+                      await googleSignIn.signOut();
+                      Navigator.pop(context); // pop out of the dialog box
                       Navigator.pop(context, true); // pop back to login screen
                       // Navigator.pop(context, true); // pop back to login screen
                     },

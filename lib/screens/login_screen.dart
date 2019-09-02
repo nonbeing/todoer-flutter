@@ -21,19 +21,19 @@ class _LoginScreenState extends State<LoginScreen> {
     googleSignIn.onCurrentUserChanged.listen((account) {
       handleSignIn(account);
     }, onError: (err) {
-      print('Error signing in: $err');
+      print('DEBUG: Error signing in: $err');
     });
     // Reauthenticate user when app is opened
     googleSignIn.signInSilently(suppressErrors: false).then((account) {
       handleSignIn(account);
     }).catchError((err) {
-      print('Error signing in: $err');
+      print('DEBUG: Error signing in: $err');
     });
   }
 
   handleSignIn(GoogleSignInAccount account) {
     if (account != null) {
-      print('User signed in!: $account');
+      print('DEBUG: User signed in!: $account');
       setState(() {
         isAuth = true;
       });
@@ -65,7 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     } else {
       // back button pressed: don't show the sign-in button, perhaps just exit
-      print("User still signed in. Back button pressed? System exit here?");
+      print(
+          "DEBUG: User still signed in. Back button pressed? System exit here?");
       // Navigator.pop(context);
       // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     }
@@ -78,14 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
       print('EXCEPTION : ${e.message}');
     }
   }
-
-  // logout() async {
-  //   try {
-  //     await googleSignIn.signOut();
-  //   } catch (e) {
-  //     print('EXCEPTION : ${e.message}');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -127,10 +120,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 20.0),
               isAuth
-                  ? RoundAvatar(
-                      googleSignIn: googleSignIn,
+                  ? InkWell(
+                      splashColor: Colors.white,
+                      child: RoundAvatar(
+                        googleSignIn: googleSignIn,
+                      ),
+                      onTap: goToTaskScreen,
                     )
-                  // ? SizedBox(height: 0.0)
                   : Material(
                       type: MaterialType.transparency,
                       child: InkWell(
@@ -138,11 +134,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Container(
                           width: 200.0,
                           child: Image(
-                            // image: googleSignIn.currentUser == null
-                            //     ? AssetImage('assets/images/google_signin_button.png')
-                            //     : Image(
-                            //         image: null,
-                            //       ),
                             image: AssetImage(
                                 'assets/images/google_signin_button.png'),
                           ),
