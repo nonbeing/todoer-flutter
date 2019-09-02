@@ -68,9 +68,7 @@ class _TaskScreenState extends State<TaskScreen> {
                       children: <Widget>[
                         todoerLogo,
                         UserAvatar(
-                          googleSignIn: googleSignIn,
-                          taskData: taskData,
-                        ),
+                            googleSignIn: googleSignIn, taskData: taskData),
                       ],
                     ),
                     SizedBox(

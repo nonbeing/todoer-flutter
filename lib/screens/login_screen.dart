@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
 import 'package:todoer/screens/task_screen.dart';
+import 'package:todoer/widgets/user_avatar.dart';
+
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todoer/widgets/constants.dart';
 
@@ -30,35 +31,13 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  handleSignIn(GoogleSignInAccount account) async {
+  handleSignIn(GoogleSignInAccount account) {
     if (account != null) {
       print('User signed in!: $account');
       setState(() {
         isAuth = true;
       });
-      bool taskScreenSignedOut = false;
-      taskScreenSignedOut = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TaskScreen(googleSignIn),
-        ),
-      );
-      print('DEBUG: taskScreenSignedOut: $taskScreenSignedOut');
-
-      // check if we got here from back button or from sign out
-      if (googleSignIn.currentUser == null && taskScreenSignedOut) {
-        // user has signed out, show sign-in button as usual
-        print('DEBUG: User has signed out!');
-
-        setState(() {
-          isAuth = false;
-        });
-      } else {
-        // back button pressed: don't show the sign-in button, perhaps just exit
-        print("User still signed in. Back button pressed? System exit here?");
-        // Navigator.pop(context);
-        // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-      }
+      goToTaskScreen();
     } else {
       setState(() {
         isAuth = false;
@@ -66,7 +45,33 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void login() async {
+  goToTaskScreen() async {
+    bool taskScreenSignedOut = false;
+    taskScreenSignedOut = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TaskScreen(googleSignIn),
+      ),
+    );
+    print('DEBUG: taskScreenSignedOut: $taskScreenSignedOut');
+
+    // check if we got here from back button or from sign out
+    if (googleSignIn.currentUser == null && taskScreenSignedOut) {
+      // user has signed out, show sign-in button as usual
+      print('DEBUG: User has signed out!');
+
+      setState(() {
+        isAuth = false;
+      });
+    } else {
+      // back button pressed: don't show the sign-in button, perhaps just exit
+      print("User still signed in. Back button pressed? System exit here?");
+      // Navigator.pop(context);
+      // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    }
+  }
+
+  login() async {
     try {
       await googleSignIn.signIn();
     } catch (e) {
@@ -74,13 +79,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void logout() async {
-    try {
-      await googleSignIn.signOut();
-    } catch (e) {
-      print('EXCEPTION : ${e.message}');
-    }
-  }
+  // logout() async {
+  //   try {
+  //     await googleSignIn.signOut();
+  //   } catch (e) {
+  //     print('EXCEPTION : ${e.message}');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +127,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 20.0),
               isAuth
-                  ? SizedBox(height: 0.0)
+                  ? RoundAvatar(
+                      googleSignIn: googleSignIn,
+                    )
+                  // ? SizedBox(height: 0.0)
                   : Material(
                       type: MaterialType.transparency,
                       child: InkWell(

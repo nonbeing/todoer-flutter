@@ -11,23 +11,7 @@ class UserAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          image: googleSignIn.currentUser != null
-              ? DecorationImage(
-                  image: NetworkImage('${googleSignIn.currentUser.photoUrl}'),
-                  fit: BoxFit.cover,
-                )
-              : null,
-          borderRadius: BorderRadius.all(
-            Radius.circular(30.0),
-          ),
-          border: Border.all(color: Colors.white, width: 1.0),
-        ),
-      ),
+      child: new RoundAvatar(googleSignIn: googleSignIn),
       onTap: () {
         return showDialog(
             context: context,
@@ -47,7 +31,7 @@ class UserAvatar extends StatelessWidget {
                       taskData.initialSyncNeeded = true;
                       Navigator.pop(context, true); // pop out of the dialog box
                       Navigator.pop(context, true); // pop back to login screen
-                      Navigator.pop(context, true); // pop back to login screen
+                      // Navigator.pop(context, true); // pop back to login screen
                     },
                     child: Text('Sign Out'),
                   )
@@ -55,6 +39,33 @@ class UserAvatar extends StatelessWidget {
               );
             });
       },
+    );
+  }
+}
+
+class RoundAvatar extends StatelessWidget {
+  const RoundAvatar({@required this.googleSignIn});
+
+  final GoogleSignIn googleSignIn;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        image: googleSignIn.currentUser != null
+            ? DecorationImage(
+                image: NetworkImage('${googleSignIn.currentUser.photoUrl}'),
+                fit: BoxFit.cover,
+              )
+            : null,
+        borderRadius: BorderRadius.all(
+          Radius.circular(30.0),
+        ),
+        border: Border.all(color: Colors.white, width: 1.0),
+      ),
     );
   }
 }
