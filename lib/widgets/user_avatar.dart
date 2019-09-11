@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:todoer/models/task_data.dart';
+// import 'package:path/path.dart';
+import 'package:flutter/services.dart';
 
 class UserAvatar extends StatelessWidget {
   const UserAvatar({@required this.googleSignIn, @required this.taskData});
@@ -29,8 +31,23 @@ class UserAvatar extends StatelessWidget {
                     onPressed: () async {
                       taskData.initialSyncNeeded = true;
                       await googleSignIn.signOut();
-                      Navigator.pop(context); // pop out of the dialog box
+                      Navigator.pop(context, true); // pop out of the dialog box
                       Navigator.pop(context, true); // pop back to login screen
+                      if (googleSignIn.currentUser != null) {
+                        // user still signed in ?! try to sign out again
+                        await googleSignIn.signOut();
+                        Navigator.pop(
+                            context, true); // pop back to login screen
+                      } else {
+                        print(
+                            'DEBUG: user is not signed in. SHOULDN\'T REACH HERE! SHOULD HAVE POPPED BACK TO HOME SCREEN!');
+                        print(
+                            'Current route: ${ModalRoute.of(context)?.settings?.name}');
+                        // SystemChannels.platform
+                        //     .invokeMethod('SystemNavigator.pop');
+
+                        // Navigator.pop(context, true); // pop back to login screen
+                      }
                       // Navigator.pop(context, true); // pop back to login screen
                     },
                     child: Text('Sign Out'),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:todoer/screens/task_screen.dart';
 import 'package:todoer/widgets/user_avatar.dart';
 
@@ -24,10 +25,10 @@ class _LoginScreenState extends State<LoginScreen> {
       print('DEBUG: Error signing in: $err');
     });
     // Reauthenticate user when app is opened
-    googleSignIn.signInSilently(suppressErrors: false).then((account) {
+    googleSignIn.signInSilently(suppressErrors: true).then((account) {
       handleSignIn(account);
     }).catchError((err) {
-      print('DEBUG: Error signing in: $err');
+      print('DEBUG: Error silently signing in: $err');
     });
   }
 
@@ -68,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print(
           "DEBUG: User still signed in. Back button pressed? System exit here?");
       // Navigator.pop(context);
-      // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     }
   }
 
@@ -76,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await googleSignIn.signIn();
     } catch (e) {
-      print('EXCEPTION : ${e.message}');
+      print('EXCEPTION (login): ${e.message}');
     }
   }
 

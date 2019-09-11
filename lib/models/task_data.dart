@@ -13,6 +13,8 @@ class TaskData extends ChangeNotifier {
 
   initialSync(String username) {
     if (initialSyncNeeded && username != null) {
+      print('DEBUG: initialSync: run initial sync for $username');
+
       _globalTasks.clear();
       this.collectionName = username;
       // get the initial task list from Firestore upon object construction
@@ -56,6 +58,9 @@ class TaskData extends ChangeNotifier {
   }
 
   void _getDataFromDb() async {
+    print(
+        '_getDataFromDb(): trying to get data from: $collectionName/$DocumentID');
+
     try {
       final resultDoc =
           await _db.collection(collectionName).document(DocumentID).get();
@@ -75,7 +80,7 @@ class TaskData extends ChangeNotifier {
         notifyListeners();
       }
     } catch (err) {
-      print('EXCEPTION: ${err.message}');
+      print('EXCEPTION (getDataFromDb): ${err.message}');
     }
   }
 }
